@@ -1,8 +1,10 @@
+const fetch = require("node-fetch");
+
 async function fetchUsers() {
   try {
     const userDataPromises = await fetch("http://localhost:3000/users");
     const userData = await userDataPromises.json();
-    return userData;
+    return userData.users; // Extract 'users' array from the response
   } catch (error) {
     throw error;
   }
@@ -14,7 +16,7 @@ async function fetchTodos(userId) {
       `http://localhost:3000/todos?user_id=${userId}`
     );
     const todoData = await todoPromises.json();
-    return todoData;
+    return todoData.todos; // Extract 'todos' array from the response
   } catch (error) {
     throw error;
   }
@@ -45,11 +47,24 @@ async function main() {
     console.log("Users:", users);
 
     let currentId = 1;
-    while (currentId < 20) {
+    const results = [];
+
+    while (currentId <= users.length) {
       const todos = await fetch5todosWithDelay(currentId);
-      console.log("Todos:", todos);
       currentId += 5;
+      for (let i = 0; i < todos.length; i++) {
+        const user = users[i];
+        const numTodosCompleted = todos[i].filter(
+          (todo) => todo.isCompleted
+        ).length;
+        results.push({
+          id: currentId - 5 + user.id,
+          name: `User ${currentId - 5 + user.id}`,
+          numTodosCompleted,
+        });
+      }
     }
+    console.log(results);
   } catch (error) {
     console.error("An error occurred:", error);
   }
