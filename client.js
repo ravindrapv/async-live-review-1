@@ -1,25 +1,17 @@
 const fetch = require("node-fetch");
 
 async function fetchUsers() {
-  try {
-    const userDataPromises = await fetch("http://localhost:3000/users");
-    const userData = await userDataPromises.json();
-    return userData.users; // Extract 'users' array from the response
-  } catch (error) {
-    throw error;
-  }
+  const userDataPromises = await fetch("http://localhost:3000/users");
+  const userData = await userDataPromises.json();
+  return userData.users; // Extract 'users' array from the response
 }
 
 async function fetchTodos(userId) {
-  try {
-    const todoPromises = await fetch(
-      `http://localhost:3000/todos?user_id=${userId}`
-    );
-    const todoData = await todoPromises.json();
-    return todoData.todos; // Extract 'todos' array from the response
-  } catch (error) {
-    throw error;
-  }
+  const todoPromises = await fetch(
+    `http://localhost:3000/todos?user_id=${userId}`
+  );
+  const todoData = await todoPromises.json();
+  return todoData.todos; // Extract 'todos' array from the response
 }
 
 async function fetch5todosWithDelay(currentId) {
@@ -28,17 +20,13 @@ async function fetch5todosWithDelay(currentId) {
     todoPromises.push(fetchTodos(i));
   }
 
-  try {
-    const todos = await Promise.all(todoPromises);
-    console.log("Fetched 5 todos ...");
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(todos);
-      }, 1000); // 1-second delay
-    });
-  } catch (error) {
-    throw error;
-  }
+  const todos = await Promise.all(todoPromises);
+  console.log("Fetched 5 todos ...");
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(todos);
+    }, 1000); // 1-second delay
+  });
 }
 
 async function main() {
